@@ -1,9 +1,6 @@
 import pygame
 
 
-
-
-
 class Player:
     def __init__(self, game):
 
@@ -15,7 +12,7 @@ class Player:
         self.rect = self.image.get_rect()
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
-
+        self.direction = None
         self.moving_right = False
         self.moving_left = False
         self.moving_up = False
@@ -24,12 +21,16 @@ class Player:
     def update_sprite(self):
         if self.moving_up:
             self.image = pygame.image.load('images/tank_up.png')
+            self.direction = 'up'
         elif self.moving_down:
             self.image = pygame.image.load('images/tank_down.png')
+            self.direction = 'down'
         elif self.moving_right:
             self.image = pygame.image.load('images/tank_right.png')
+            self.direction = 'right'
         elif self.moving_left:
             self.image = pygame.image.load('images/tank_left.png')
+            self.direction = 'left'
 
     def update_position(self):
 
@@ -46,3 +47,5 @@ class Player:
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
+
+

@@ -1,6 +1,8 @@
 import sys
 
 import pygame
+
+from bullet import Bullet
 from setting import *
 from player import Player
 
@@ -11,10 +13,12 @@ class Game:
         self.player_setting = PlayerSetting()
         self.screen_setting = ScreenSetting()
         self.color_setting = ColorSetting()
-
+        self.bullet_setting = BulletSetting()
         self.screen = pygame.display.set_mode((self.screen_setting.size_w, self.screen_setting.size_h))
         self.clock = pygame.time.Clock()
         self.player = Player(self)
+
+        self.bullet = pygame.sprite.Group()
 
 
     def _check_events(self):
@@ -25,7 +29,6 @@ class Game:
                 self._check_keydown_events(event)
             if event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
-
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_d:
@@ -40,8 +43,16 @@ class Game:
         elif event.key == pygame.K_s:
             self.player.moving_down = True
 
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
+
         elif event.key == pygame.K_q:
             sys.exit()
+
+    def _fire_bullet(self):
+        new_bullet = Bullet(self)
+        self.bullet.add(new_bullet)
+
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_d:
@@ -53,17 +64,24 @@ class Game:
         elif event.key == pygame.K_s:
             self.player.moving_down = False
 
+
     def update_screen(self):
-        self.screen.fill(self.color_setting.WHITE)
+        self.screen.fill(self.color_setting.GREY)
+
         self.player.update_position()
         self.player.update_sprite()
         self.player.draw()
+        for bullet in self.bullet.sprites():
+            bullet.draw()
+
         pygame.display.flip()
 
     def start(self):
         while True:
             self.clock.tick(60)
             self._check_events()
+            self.bullet.update()
+
             self.update_screen()
 
 
